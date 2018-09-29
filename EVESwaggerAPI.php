@@ -12,20 +12,13 @@ use DenisKhodakovskiyESI\src\Alliance;
 use DenisKhodakovskiyESI\src\Character;
 use DenisKhodakovskiyESI\src\Corporation;
 use DenisKhodakovskiyESI\src\EVE;
+use DenisKhodakovskiyESI\src\EVESSO;
 use DenisKhodakovskiyESI\src\FactionWarfare;
+use DenisKhodakovskiyESI\src\Market;
+use DenisKhodakovskiyESI\src\Route;
 
 class EVESwaggerAPI
 {
-    /**
-     * @var EVE
-     */
-    public $eve;
-
-    public function __construct()
-    {
-        $this->eve = new EVE();
-    }
-
     /**
      * Returns an instance of a character class
      * @param int $characterId
@@ -59,8 +52,48 @@ class EVESwaggerAPI
         return new Alliance($allianceId, $token);
     }
 
+    /**
+     * @return EVE
+     */
+    public function eve()
+    {
+        return new EVE();
+    }
+
+    /**
+     * @return FactionWarfare
+     */
     public function fw()
     {
         return new FactionWarfare();
+    }
+
+    /**
+     * @return Market
+     */
+    public function market()
+    {
+        return new Market();
+    }
+
+    /**
+     * @param $fromSolarSystemId
+     * @param $toSolarSystemId
+     * @param string $flag
+     * @return Route
+     */
+    public function route($fromSolarSystemId, $toSolarSystemId, $flag = Route::FLAG_SHORTEST)
+    {
+        return new Route($fromSolarSystemId, $toSolarSystemId, $flag);
+    }
+
+    /**
+     * Return SSO component
+     * @return EVESSO
+     * @throws \Exception
+     */
+    public function sso()
+    {
+        return new EVESSO();
     }
 }

@@ -21,14 +21,14 @@ class Request
     /**
      * @var string
      */
-    protected $uri;
+    private $uri;
 
     /**
      * @var string
      */
-    protected $type = self::TYPE_GET;
-    protected $data;
-    protected $header;
+    private $type = self::TYPE_GET;
+    private $data;
+    private $header;
 
     /**
      * @var Logger
@@ -67,7 +67,12 @@ class Request
      */
     public function execute()
     {
-        $url = "https://esi.evetech.net/latest{$this->uri}";
+        $url = parse_url($this->uri, PHP_URL_SCHEME)
+            ? $this->uri
+            : "https://esi.evetech.net/latest{$this->uri}";
+        if ($this->type == self::TYPE_GET && !empty($this->data)) {
+            $url .= '?' . http_build_query($this->data);
+        }
         $this->getLogger()->log("Sending request: {$url}", 'request');
 
         $ch = curl_init($url);
@@ -77,7 +82,7 @@ class Request
             $this->type == self::TYPE_POST ? CURLOPT_POST : CURLOPT_CUSTOMREQUEST,
             $this->type == $this::TYPE_POST ? true : $this->type
         );
-        if ($this->data) {
+        if ($this->data && $this->type != self::TYPE_GET) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $this->data);
         }
         if ($this->header) {
@@ -93,6 +98,7 @@ class Request
         }
 
         $data = json_decode($result, true);
+        $this->getLogger()->log("Response from ESI: " . print_r($data, true), 'request');
         if (isset($data['error'])) {
             throw new \Exception($data['error'], 400);
         }

@@ -13,6 +13,7 @@ use DenisKhodakovskiyESI\src\contracts\PublicRegionContract;
 use DenisKhodakovskiyESI\src\incursions\Incursion;
 use DenisKhodakovskiyESI\src\industry\IndustryFacility;
 use DenisKhodakovskiyESI\src\industry\IndustrySystem;
+use DenisKhodakovskiyESI\src\insurance\InsurancePrice;
 
 class EVE
 {
@@ -40,6 +41,11 @@ class EVE
      * @var IndustrySystem[]
      */
     private $industrySystems;
+
+    /**
+     * @var InsurancePrice[]
+     */
+    private $insurancePrizes;
 
     /**
      * Returns an array of alliances Ids
@@ -164,5 +170,25 @@ class EVE
         }
 
         return $this->industrySystems;
+    }
+
+    /**
+     * Return available insurance levels for all ship types
+     * @return InsurancePrice[]
+     * @throws \Exception
+     */
+    public function insurancePrizes()
+    {
+        if (!$this->insurancePrizes) {
+            $data = (new Request('/insurance/prices/'))
+                ->execute();
+            foreach ($data as &$price) {
+                $price = new InsurancePrice($price);
+            }
+
+            $this->insurancePrizes = $data;
+        }
+
+        return $this->insurancePrizes;
     }
 }

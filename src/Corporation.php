@@ -11,6 +11,7 @@ namespace DenisKhodakovskiyESI\src;
 use DenisKhodakovskiyESI\src\corporation\CorporationAllianceHistoryRecord;
 use DenisKhodakovskiyESI\src\corporation\CorporationIcons;
 use DenisKhodakovskiyESI\src\corporation\CorporationInfo;
+use DenisKhodakovskiyESI\src\loyalty\LPStoreItem;
 
 class Corporation
 {
@@ -38,6 +39,12 @@ class Corporation
      * @var CorporationIcons
      */
     private $icons;
+
+    /**
+     * List of LP store items (for NPC corporations only)
+     * @var LPStoreItem[]
+     */
+    private $lpStore;
 
     public function __construct($corporationId, $token = null)
     {
@@ -103,6 +110,28 @@ class Corporation
         }
 
         return $this->icons;
+    }
+
+    /**
+     * Return a list of offers from a specific corporation’s loyalty store (for NPC corporations only)
+     * @return LPStoreItem[]
+     * @throws \Exception
+     */
+    public function lpStore()
+    {
+        if (!$this->lpStore) {
+            $this->isIdProvided();
+
+            $data = (new Request("/loyalty/stores/{$this->corporationId}/offers/"))
+                ->execute();
+            foreach ($data as &$item) {
+                $item = new LPStoreItem($item);
+            }
+
+            $this->lpStore = $data;
+        }
+
+        return $this->lpStore;
     }
 
     /**

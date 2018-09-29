@@ -8,6 +8,8 @@
 
 namespace DenisKhodakovskiyESI\src;
 
+use DenisKhodakovskiyESI\src\character\AssetItem;
+use DenisKhodakovskiyESI\src\character\AssetItemLocation;
 use DenisKhodakovskiyESI\src\character\CharacterCorporationHistoryRecord;
 use DenisKhodakovskiyESI\src\character\CharacterInfo;
 use DenisKhodakovskiyESI\src\character\CharacterPortrait;
@@ -106,6 +108,54 @@ class Character
         }
 
         return $this->portrait;
+    }
+
+    /**
+     * Character assets list
+     * @param int $page
+     * @return AssetItem[]
+     * @throws \Exception
+     */
+    public function assets($page = 1)
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $assets = (new Request("/characters/{$this->characterId}/assets/"))
+            ->setData([
+                'page' => $page,
+                'token' => $this->token,
+            ])
+            ->execute();
+
+        foreach ($assets as &$asset) {
+            $asset = new AssetItem($asset);
+        }
+
+        return $assets;
+    }
+
+    /**
+     * @param array $itemIds
+     * @return AssetItemLocation[]
+     * @throws \Exception
+     */
+    public function assetsLocations(array $itemIds)
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $data = (new Request("/characters/{$this->characterId}/assets/locations/"))
+            ->setType(Request::TYPE_POST)
+            ->setData(json_encode($itemIds))
+            ->setData(['token' => $this->token])
+            ->execute();
+
+        foreach ($data as &$row) {
+            $row = new AssetItemLocation($row);
+        }
+
+        return $data;
     }
 
     /**
