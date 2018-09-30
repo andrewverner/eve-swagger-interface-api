@@ -6,7 +6,7 @@
  * Time: 12:27
  */
 
-namespace DenisKhodakovskiyESI\src\character;
+namespace DenisKhodakovskiyESI\src\bookmarks;
 
 use DenisKhodakovskiyESI\src\BaseObject;
 

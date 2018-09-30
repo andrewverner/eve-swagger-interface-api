@@ -8,12 +8,14 @@
 
 namespace DenisKhodakovskiyESI\src;
 
-use DenisKhodakovskiyESI\src\character\AssetItem;
-use DenisKhodakovskiyESI\src\character\AssetItemLocation;
-use DenisKhodakovskiyESI\src\character\AssetItemName;
-use DenisKhodakovskiyESI\src\character\CharacterBookmark;
-use DenisKhodakovskiyESI\src\character\CharacterBookmarkFolder;
-use DenisKhodakovskiyESI\src\character\CharacterCalendarEvent;
+use DenisKhodakovskiyESI\src\assets\AssetItem;
+use DenisKhodakovskiyESI\src\assets\AssetItemLocation;
+use DenisKhodakovskiyESI\src\assets\AssetItemName;
+use DenisKhodakovskiyESI\src\bookmarks\CharacterBookmark;
+use DenisKhodakovskiyESI\src\bookmarks\CharacterBookmarkFolder;
+use DenisKhodakovskiyESI\src\calendar\CharacterCalendarEvent;
+use DenisKhodakovskiyESI\src\calendar\CharacterCalendarEventAttendee;
+use DenisKhodakovskiyESI\src\calendar\CharacterCalendarEventInfo;
 use DenisKhodakovskiyESI\src\character\CharacterCorporationHistoryRecord;
 use DenisKhodakovskiyESI\src\character\CharacterInfo;
 use DenisKhodakovskiyESI\src\character\CharacterPortrait;
@@ -235,6 +237,12 @@ class Character
         return $data;
     }
 
+    /**
+     * Get 50 event summaries from the calendar. If no from_event ID is given, the resource will return the next 50 chronological event summaries from now. If a from_event ID is specified, it will return the next 50 chronological event summaries from after that event
+     * @param null $fromEvent
+     * @return CharacterCalendarEvent[]
+     * @throws \Exception
+     */
     public function calendarEvents($fromEvent = null)
     {
         $this->isIdProvided();
@@ -244,7 +252,7 @@ class Character
         if ($fromEvent) {
             $params['from_event'] = $fromEvent;
         }
-        $data = (new Request("/characters/{$this->characterId}/bookmarks/folders/"))
+        $data = (new Request("/characters/{$this->characterId}/calendar/"))
             ->setData($params)
             ->execute();
 
@@ -253,6 +261,74 @@ class Character
         }
 
         return $data;
+    }
+
+    /**
+     * Get all invited attendees for a given event
+     * @param $eventId
+     * @return CharacterCalendarEventAttendee[]
+     * @throws \Exception
+     */
+    public function calendarEventAttendees($eventId)
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $data = (new Request("/characters/{$this->characterId}/calendar/{$eventId}/attendees/"))
+            ->setData(['token' => $this->token])
+            ->execute();
+
+        foreach ($data as &$attendee) {
+            $attendee = new CharacterCalendarEventAttendee($attendee);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Set your response status to an event
+     * @param $eventId
+     * @param $response
+     * @return bool
+     * @throws \Exception
+     */
+    public function respondToCalendarEvent($eventId, $response)
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        if (!in_array($response, [
+            CharacterCalendarEvent::EVENT_RESPONSE_ACCEPTED,
+            CharacterCalendarEvent::EVENT_RESPONSE_DECLINED,
+            CharacterCalendarEvent::EVENT_RESPONSE_TENTATIVE,
+        ])) {
+            return false;
+        }
+
+        (new Request("/characters/{$this->characterId}/calendar/{$eventId}/?token={$this->token}"))
+            ->setType(Request::TYPE_PUT)
+            ->setData(json_encode(['response' => $response]))
+            ->execute();
+
+        return true;
+    }
+
+    /**
+     * Get all the information for a specific event
+     * @param $eventId
+     * @return CharacterCalendarEventInfo
+     * @throws \Exception
+     */
+    public function eventInfo($eventId)
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $data = (new Request("/characters/{$this->characterId}/calendar/{$eventId}/"))
+            ->setData(['token' => $this->token])
+            ->execute();
+
+        return new CharacterCalendarEventInfo($data);
     }
 
     /**

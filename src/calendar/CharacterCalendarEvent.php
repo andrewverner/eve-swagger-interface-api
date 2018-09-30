@@ -6,7 +6,7 @@
  * Time: 12:38
  */
 
-namespace DenisKhodakovskiyESI\src\character;
+namespace DenisKhodakovskiyESI\src\calendar;
 
 use DenisKhodakovskiyESI\src\BaseObject;
 

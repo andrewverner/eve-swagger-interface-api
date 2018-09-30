@@ -73,7 +73,7 @@ class Request
         if ($this->type == self::TYPE_GET && !empty($this->data)) {
             $url .= '?' . http_build_query($this->data);
         }
-        $this->getLogger()->log("Sending request: {$url}", 'request');
+        $this->getLogger()->log("Sending request: {$this->type} {$url}", 'request');
 
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

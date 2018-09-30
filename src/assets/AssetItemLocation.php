@@ -6,7 +6,7 @@
  * Time: 22:53
  */
 
-namespace DenisKhodakovskiyESI\src\character;
+namespace DenisKhodakovskiyESI\src\assets;
 
 use DenisKhodakovskiyESI\src\BaseObject;
 
