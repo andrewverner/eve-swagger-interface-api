@@ -91,6 +91,6 @@ if (isset($_GET['auth'])) {
 
     $character = $sso->getCharacter($token->accessToken);
     \DenisKhodakovskiyESI\Dumper::printR(
-        $character->assetsLocations([1017026838682, 1020020533619, 1020020949060])
+        $character->calendarEvents()
     );
 }

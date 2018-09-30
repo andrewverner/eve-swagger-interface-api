@@ -10,6 +10,10 @@ namespace DenisKhodakovskiyESI\src;
 
 use DenisKhodakovskiyESI\src\character\AssetItem;
 use DenisKhodakovskiyESI\src\character\AssetItemLocation;
+use DenisKhodakovskiyESI\src\character\AssetItemName;
+use DenisKhodakovskiyESI\src\character\CharacterBookmark;
+use DenisKhodakovskiyESI\src\character\CharacterBookmarkFolder;
+use DenisKhodakovskiyESI\src\character\CharacterCalendarEvent;
 use DenisKhodakovskiyESI\src\character\CharacterCorporationHistoryRecord;
 use DenisKhodakovskiyESI\src\character\CharacterInfo;
 use DenisKhodakovskiyESI\src\character\CharacterPortrait;
@@ -136,6 +140,7 @@ class Character
     }
 
     /**
+     * Return locations for a set of item ids, which you can get from character assets endpoint. Coordinates for items in hangars or stations are set to (0,0,0)
      * @param array $itemIds
      * @return AssetItemLocation[]
      * @throws \Exception
@@ -145,14 +150,106 @@ class Character
         $this->isIdProvided();
         $this->isTokenProvided();
 
-        $data = (new Request("/characters/{$this->characterId}/assets/locations/"))
+        $data = (new Request("/characters/{$this->characterId}/assets/locations/?token={$this->token}"))
             ->setType(Request::TYPE_POST)
             ->setData(json_encode($itemIds))
-            ->setData(['token' => $this->token])
             ->execute();
 
         foreach ($data as &$row) {
             $row = new AssetItemLocation($row);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Return names for a set of item ids, which you can get from character assets endpoint. Typically used for items that can customize names, like containers or ships
+     * @param array $itemIds
+     * @return AssetItemName[]
+     * @throws \Exception
+     */
+    public function assetsNames(array $itemIds)
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $data = (new Request("/characters/{$this->characterId}/assets/names/?token={$this->token}"))
+            ->setType(Request::TYPE_POST)
+            ->setData(json_encode($itemIds))
+            ->execute();
+
+        foreach ($data as &$row) {
+            $row = new AssetItemName($row);
+        }
+
+        return $data;
+    }
+
+    /**
+     * A list of your character’s personal bookmarks
+     * @param int $page
+     * @return CharacterBookmark[]
+     * @throws \Exception
+     */
+    public function bookmarks($page = 1)
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $data = (new Request("/characters/{$this->characterId}/bookmarks/"))
+            ->setData([
+                'page' => $page,
+                'token' => $this->token,
+            ])
+            ->execute();
+
+        foreach ($data as &$bookmark) {
+            $bookmark = new CharacterBookmark($bookmark);
+        }
+
+        return $data;
+    }
+
+    /**
+     * A list of your character’s personal bookmark folders
+     * @param int $page
+     * @return CharacterBookmarkFolder[]
+     * @throws \Exception
+     */
+    public function bookmarksFolders($page = 1)
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $data = (new Request("/characters/{$this->characterId}/bookmarks/folders/"))
+            ->setData([
+                'page' => $page,
+                'token' => $this->token,
+            ])
+            ->execute();
+
+        foreach ($data as &$folder) {
+            $folder = new CharacterBookmarkFolder($folder);
+        }
+
+        return $data;
+    }
+
+    public function calendarEvents($fromEvent = null)
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $params = ['token' => $this->token];
+        if ($fromEvent) {
+            $params['from_event'] = $fromEvent;
+        }
+        $data = (new Request("/characters/{$this->characterId}/bookmarks/folders/"))
+            ->setData($params)
+            ->execute();
+
+        foreach ($data as &$event) {
+            $event = new CharacterCalendarEvent($event);
         }
 
         return $data;
