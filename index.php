@@ -17,6 +17,7 @@ spl_autoload_register(function ($className) {
             'src/contacts',
             'src/contracts',
             'src/corporation',
+            'src/fleets',
             'src/fw',
             'src/incursions',
             'src/industry',
@@ -95,8 +96,10 @@ if (isset($_GET['auth'])) {
     $tz6j2 = 30004529;
 
     $character = $sso->getCharacter($token->accessToken);
+    $fleet = $character->fleet();
+    $fleet->isFreeMove = false;
+    $fleet->motd = 'Test API fleet MOTD';
     \DenisKhodakovskiyESI\Dumper::printR(
-        #$character->editContacts([3010120], 2, false)
-        $character->fleet()
+        $fleet->members()
     );
 }

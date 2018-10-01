@@ -734,7 +734,7 @@ class Character
                 ->setData(['token' => $this->token])
                 ->execute();
 
-            return new CharacterFleet($fleet);
+            return new CharacterFleet($fleet, $this->token);
         } catch (\Exception $exception) {
             return null;
         }
