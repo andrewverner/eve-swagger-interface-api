@@ -29,6 +29,10 @@ use DenisKhodakovskiyESI\src\character\CharacterRoles;
 use DenisKhodakovskiyESI\src\character\CharacterStanding;
 use DenisKhodakovskiyESI\src\character\CharacterTitle;
 use DenisKhodakovskiyESI\src\clones\CharacterClones;
+use DenisKhodakovskiyESI\src\contacts\CharacterContact;
+use DenisKhodakovskiyESI\src\contacts\CharacterContactLabel;
+use DenisKhodakovskiyESI\src\contracts\CharacterContract;
+use DenisKhodakovskiyESI\src\fleets\CharacterFleet;
 
 class Character
 {
@@ -553,6 +557,187 @@ class Character
         return (new Request("/characters/{$this->characterId}/implants/"))
             ->setData(['token' => $this->token])
             ->execute();
+    }
+
+    /**
+     * Return contacts of a character
+     * @param int $page
+     * @return CharacterContact[]
+     * @throws \Exception
+     */
+    public function contacts($page = 1)
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $contacts = (new Request("/characters/{$this->characterId}/contacts/"))
+            ->setData([
+                'token' => $this->token,
+                'page' => $page,
+            ])
+            ->execute();
+
+        foreach ($contacts as &$contact) {
+            $contact = new CharacterContact($contact);
+        }
+
+        return $contacts;
+    }
+
+    /**
+     * Bulk delete contacts
+     * @param int[] $contactsIds
+     * @throws \Exception
+     * @return bool
+     */
+    public function deleteContacts(array $contactsIds)
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        (new Request("/characters/{$this->characterId}/contacts/?" . http_build_query([
+                'token' => $this->token,
+                'contact_ids' => implode(',', $contactsIds)
+            ])))
+            ->setType(Request::TYPE_DELETE)
+            ->execute();
+
+        return true;
+    }
+
+    /**
+     * Bulk add contacts with same settings
+     * @param int[] $contactsIds
+     * @param float $standing
+     * @param bool $watched
+     * @param int[] $labelIds
+     * @return bool
+     * @throws \Exception
+     */
+    public function addContacts(array $contactsIds, $standing, $watched = false, array $labelIds = null)
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $params = [
+            'token' => $this->token,
+            'standing' => $standing,
+        ];
+        if ($watched) {
+            $params['watched'] = $watched;
+        }
+        if ($labelIds) {
+            $params['label_ids'] = $labelIds;
+        }
+
+        (new Request("/characters/{$this->characterId}/contacts/?" . http_build_query($params)))
+            ->setType(Request::TYPE_POST)
+            ->setData(json_encode($contactsIds))
+            ->execute();
+
+        return true;
+    }
+
+    /**
+     * Bulk edit contacts with same settings
+     * @param int[] $contactsIds
+     * @param $standing
+     * @param bool $watched
+     * @param int[] $labelIds
+     * @return bool
+     * @throws \Exception
+     */
+    public function editContacts(array $contactsIds, $standing, $watched = false, array $labelIds = null)
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $params = [
+            'token' => $this->token,
+            'standing' => $standing,
+        ];
+        if ($watched) {
+            $params['watched'] = $watched;
+        }
+        if ($labelIds) {
+            $params['label_ids'] = $labelIds;
+        }
+
+        (new Request("/characters/{$this->characterId}/contacts/?" . http_build_query($params)))
+            ->setType(Request::TYPE_PUT)
+            ->setData(json_encode($contactsIds))
+            ->execute();
+
+        return true;
+    }
+
+    /**
+     * Return custom labels for a character’s contacts
+     * @return CharacterContactLabel[]
+     * @throws \Exception
+     */
+    public function contactsLabels()
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $labels = (new Request("/characters/{$this->characterId}/contacts/labels/"))
+            ->setData([
+                'token' => $this->token,
+            ])
+            ->execute();
+
+        foreach ($labels as &$label) {
+            $label = new CharacterContactLabel($label);
+        }
+
+        return $labels;
+    }
+
+    /**
+     * Returns contracts available to a character, only if the character is issuer, acceptor or assignee. Only returns contracts no older than 30 days, or if the status is "in_progress".
+     * @param int $page
+     * @return CharacterContract[]
+     * @throws \Exception
+     */
+    public function contracts($page = 1)
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $contracts = (new Request("/characters/{$this->characterId}/contracts/"))
+            ->setData([
+                'token' => $this->token,
+                'page' => $page,
+            ])
+            ->execute();
+
+        foreach ($contracts as &$contract) {
+            $contract = new CharacterContract($contract, $this->characterId, $this->token);
+        }
+
+        return $contracts;
+    }
+
+    /**
+     * Return the fleet ID the character is in, if any.
+     * @return CharacterFleet|null
+     * @throws \Exception
+     */
+    public function fleet()
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        try {
+            $fleet = (new Request("/characters/{$this->characterId}/fleet/"))
+                ->setData(['token' => $this->token])
+                ->execute();
+
+            return new CharacterFleet($fleet);
+        } catch (\Exception $exception) {
+            return null;
+        }
     }
 
     /**

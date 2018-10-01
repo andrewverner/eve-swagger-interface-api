@@ -239,6 +239,6 @@ class CharacterNotification extends BaseObject
     public function __construct($data)
     {
         parent::__construct($data);
-        $this->timestamp = (new \DateTime())->setTimestamp($this->timestamp);
+        $this->timestamp = new \DateTime($this->timestamp);
     }
 }

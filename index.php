@@ -14,6 +14,7 @@ spl_autoload_register(function ($className) {
             'src/calendar',
             'src/character',
             'src/clones',
+            'src/contacts',
             'src/contracts',
             'src/corporation',
             'src/fw',
@@ -95,6 +96,7 @@ if (isset($_GET['auth'])) {
 
     $character = $sso->getCharacter($token->accessToken);
     \DenisKhodakovskiyESI\Dumper::printR(
-        $character->blueprints()
+        #$character->editContacts([3010120], 2, false)
+        $character->fleet()
     );
 }
