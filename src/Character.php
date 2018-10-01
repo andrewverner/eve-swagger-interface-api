@@ -16,9 +16,19 @@ use DenisKhodakovskiyESI\src\bookmarks\CharacterBookmarkFolder;
 use DenisKhodakovskiyESI\src\calendar\CharacterCalendarEvent;
 use DenisKhodakovskiyESI\src\calendar\CharacterCalendarEventAttendee;
 use DenisKhodakovskiyESI\src\calendar\CharacterCalendarEventInfo;
+use DenisKhodakovskiyESI\src\character\CharacterAgentsResearch;
+use DenisKhodakovskiyESI\src\character\CharacterBlueprint;
+use DenisKhodakovskiyESI\src\character\CharacterContactNotification;
 use DenisKhodakovskiyESI\src\character\CharacterCorporationHistoryRecord;
 use DenisKhodakovskiyESI\src\character\CharacterInfo;
+use DenisKhodakovskiyESI\src\character\CharacterJumpFatigue;
+use DenisKhodakovskiyESI\src\character\CharacterMedal;
+use DenisKhodakovskiyESI\src\character\CharacterNotification;
 use DenisKhodakovskiyESI\src\character\CharacterPortrait;
+use DenisKhodakovskiyESI\src\character\CharacterRoles;
+use DenisKhodakovskiyESI\src\character\CharacterStanding;
+use DenisKhodakovskiyESI\src\character\CharacterTitle;
+use DenisKhodakovskiyESI\src\clones\CharacterClones;
 
 class Character
 {
@@ -329,6 +339,220 @@ class Character
             ->execute();
 
         return new CharacterCalendarEventInfo($data);
+    }
+
+    /**
+     * Return a list of agents research information for a character. The formula for finding the current research points with an agent is: currentPoints = remainderPoints + pointsPerDay * days(currentTime - researchStartDate)
+     * @return CharacterAgentsResearch[]
+     * @throws \Exception
+     */
+    public function agentsResearch()
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $data = (new Request("/characters/{$this->characterId}/agents_research/"))
+            ->setData(['token' => $this->token])
+            ->execute();
+
+        foreach ($data as &$research) {
+            $research = new CharacterAgentsResearch($research);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Return a list of blueprints the character owns
+     * @param int $page
+     * @return CharacterBlueprint[]
+     * @throws \Exception
+     */
+    public function blueprints($page = 1)
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $data = (new Request("/characters/{$this->characterId}/blueprints/"))
+            ->setData(['token' => $this->token])
+            ->execute();
+
+        foreach ($data as &$blueprint) {
+            $blueprint = new CharacterBlueprint($blueprint);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Return a character’s jump activation and fatigue information
+     * @return CharacterJumpFatigue
+     * @throws \Exception
+     */
+    public function jumpFatigue()
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $data = (new Request("/characters/{$this->characterId}/fatigue/"))
+            ->setData(['token' => $this->token])
+            ->execute();
+
+        return new CharacterJumpFatigue($data);
+    }
+
+    /**
+     * Return a list of medals the character has
+     * @return CharacterMedal[]
+     * @throws \Exception
+     */
+    public function medals()
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $data = (new Request("/characters/{$this->characterId}/medals/"))
+            ->setData(['token' => $this->token])
+            ->execute();
+
+        foreach ($data as &$medal) {
+            $medal = new CharacterMedal($medal);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Return character notifications
+     * @return CharacterNotification[]
+     * @throws \Exception
+     */
+    public function notifications()
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $data = (new Request("/characters/{$this->characterId}/notifications/"))
+            ->setData(['token' => $this->token])
+            ->execute();
+
+        foreach ($data as &$notification) {
+            $notification = new CharacterNotification($notification);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Return notifications about having been added to someone’s contact list
+     * @return CharacterContactNotification[]
+     * @throws \Exception
+     */
+    public function contactsNotifications()
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $data = (new Request("/characters/{$this->characterId}/notifications/contacts/"))
+            ->setData(['token' => $this->token])
+            ->execute();
+
+        foreach ($data as &$notification) {
+            $notification = new CharacterContactNotification($notification);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Returns a character’s corporation roles
+     * @return CharacterRoles
+     * @throws \Exception
+     */
+    public function roles()
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $data = (new Request("/characters/{$this->characterId}/roles/"))
+            ->setData(['token' => $this->token])
+            ->execute();
+
+        return new CharacterRoles($data);
+    }
+
+    /**
+     * Return character standings from agents, NPC corporations, and factions
+     * @return CharacterStanding[]
+     * @throws \Exception
+     */
+    public function standings()
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $data = (new Request("/characters/{$this->characterId}/standings/"))
+            ->setData(['token' => $this->token])
+            ->execute();
+
+        foreach ($data as &$standing) {
+            $standing = new CharacterStanding($standing);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Returns a character’s titles
+     * @return CharacterTitle[]
+     * @throws \Exception
+     */
+    public function titles()
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $data = (new Request("/characters/{$this->characterId}/titles/"))
+            ->setData(['token' => $this->token])
+            ->execute();
+
+        foreach ($data as &$title) {
+            $title = new CharacterTitle($title);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Return implants on the active clone of a character
+     * @return CharacterClones
+     * @throws \Exception
+     */
+    public function clones()
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        $data = (new Request("/characters/{$this->characterId}/clones/"))
+            ->setData(['token' => $this->token])
+            ->execute();
+
+        return new CharacterClones($data);
+    }
+
+    /**
+     * Return implants on the active clone of a character
+     * @return int[]
+     * @throws \Exception
+     */
+    public function implants()
+    {
+        $this->isIdProvided();
+        $this->isTokenProvided();
+
+        return (new Request("/characters/{$this->characterId}/implants/"))
+            ->setData(['token' => $this->token])
+            ->execute();
     }
 
     /**

@@ -13,6 +13,7 @@ spl_autoload_register(function ($className) {
             'src/bookmarks',
             'src/calendar',
             'src/character',
+            'src/clones',
             'src/contracts',
             'src/corporation',
             'src/fw',
@@ -94,6 +95,6 @@ if (isset($_GET['auth'])) {
 
     $character = $sso->getCharacter($token->accessToken);
     \DenisKhodakovskiyESI\Dumper::printR(
-        $character->respondToCalendarEvent(1795569, \DenisKhodakovskiyESI\src\calendar\CharacterCalendarEvent::EVENT_RESPONSE_ACCEPTED)
+        $character->blueprints()
     );
 }

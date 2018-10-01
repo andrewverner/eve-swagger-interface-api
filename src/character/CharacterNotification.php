@@ -1,0 +1,244 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Denis Khodakovskiy
+ * Date: 01.10.18
+ * Time: 11:55
+ */
+
+namespace DenisKhodakovskiyESI\src\character;
+
+use DenisKhodakovskiyESI\src\BaseObject;
+
+class CharacterNotification extends BaseObject
+{
+    const SENDER_TYPE_CORPORATION = 'corporation';
+    const SENDER_TYPE_CHARACTER   = 'character';
+    const SENDER_TYPE_ALLIANCE    = 'alliance';
+    const SENDER_TYPE_FACTION     = 'faction';
+    const SENDER_TYPE_OTHER       = 'other';
+
+    const NOTIFICATION_TYPE_ACCEPTEDALLY = 'AcceptedAlly';
+    const NOTIFICATION_TYPE_ACCEPTEDSURRENDER = 'AcceptedSurrender';
+    const NOTIFICATION_TYPE_ALLANCHORINGMSG = 'AllAnchoringMsg';
+    const NOTIFICATION_TYPE_ALLMAINTENANCEBILLMSG = 'AllMaintenanceBillMsg';
+    const NOTIFICATION_TYPE_ALLSTRUCINVULNERABLEMSG = 'AllStrucInvulnerableMsg';
+    const NOTIFICATION_TYPE_ALLSTRUCTVULNERABLEMSG = 'AllStructVulnerableMsg';
+    const NOTIFICATION_TYPE_ALLWARCORPJOINEDALLIANCEMSG = 'AllWarCorpJoinedAllianceMsg';
+    const NOTIFICATION_TYPE_ALLWARDECLAREDMSG = 'AllWarDeclaredMsg';
+    const NOTIFICATION_TYPE_ALLWARINVALIDATEDMSG = 'AllWarInvalidatedMsg';
+    const NOTIFICATION_TYPE_ALLWARRETRACTEDMSG = 'AllWarRetractedMsg';
+    const NOTIFICATION_TYPE_ALLWARSURRENDERMSG = 'AllWarSurrenderMsg';
+    const NOTIFICATION_TYPE_ALLIANCECAPITALCHANGED = 'AllianceCapitalChanged';
+    const NOTIFICATION_TYPE_ALLYCONTRACTCANCELLED = 'AllyContractCancelled';
+    const NOTIFICATION_TYPE_ALLYJOINEDWARAGGRESSORMSG = 'AllyJoinedWarAggressorMsg';
+    const NOTIFICATION_TYPE_ALLYJOINEDWARALLYMSG = 'AllyJoinedWarAllyMsg';
+    const NOTIFICATION_TYPE_ALLYJOINEDWARDEFENDERMSG = 'AllyJoinedWarDefenderMsg';
+    const NOTIFICATION_TYPE_BATTLEPUNISHFRIENDLYFIRE = 'BattlePunishFriendlyFire';
+    const NOTIFICATION_TYPE_BILLOUTOFMONEYMSG = 'BillOutOfMoneyMsg';
+    const NOTIFICATION_TYPE_BILLPAIDCORPALLMSG = 'BillPaidCorpAllMsg';
+    const NOTIFICATION_TYPE_BOUNTYCLAIMMSG = 'BountyClaimMsg';
+    const NOTIFICATION_TYPE_BOUNTYESSSHARED = 'BountyESSShared';
+    const NOTIFICATION_TYPE_BOUNTYESSTAKEN = 'BountyESSTaken';
+    const NOTIFICATION_TYPE_BOUNTYPLACEDALLIANCE = 'BountyPlacedAlliance';
+    const NOTIFICATION_TYPE_BOUNTYPLACEDCHAR = 'BountyPlacedChar';
+    const NOTIFICATION_TYPE_BOUNTYPLACEDCORP = 'BountyPlacedCorp';
+    const NOTIFICATION_TYPE_BOUNTYYOURBOUNTYCLAIMED = 'BountyYourBountyClaimed';
+    const NOTIFICATION_TYPE_BUDDYCONNECTCONTACTADD = 'BuddyConnectContactAdd';
+    const NOTIFICATION_TYPE_CHARAPPACCEPTMSG = 'CharAppAcceptMsg';
+    const NOTIFICATION_TYPE_CHARAPPREJECTMSG = 'CharAppRejectMsg';
+    const NOTIFICATION_TYPE_CHARAPPWITHDRAWMSG = 'CharAppWithdrawMsg';
+    const NOTIFICATION_TYPE_CHARLEFTCORPMSG = 'CharLeftCorpMsg';
+    const NOTIFICATION_TYPE_CHARMEDALMSG = 'CharMedalMsg';
+    const NOTIFICATION_TYPE_CHARTERMINATIONMSG = 'CharTerminationMsg';
+    const NOTIFICATION_TYPE_CLONEACTIVATIONMSG = 'CloneActivationMsg';
+    const NOTIFICATION_TYPE_CLONEACTIVATIONMSG2 = 'CloneActivationMsg2';
+    const NOTIFICATION_TYPE_CLONEMOVEDMSG = 'CloneMovedMsg';
+    const NOTIFICATION_TYPE_CLONEREVOKEDMSG1 = 'CloneRevokedMsg1';
+    const NOTIFICATION_TYPE_CLONEREVOKEDMSG2 = 'CloneRevokedMsg2';
+    const NOTIFICATION_TYPE_CONTACTADD = 'ContactAdd';
+    const NOTIFICATION_TYPE_CONTACTEDIT = 'ContactEdit';
+    const NOTIFICATION_TYPE_CONTAINERPASSWORDMSG = 'ContainerPasswordMsg';
+    const NOTIFICATION_TYPE_CORPALLBILLMSG = 'CorpAllBillMsg';
+    const NOTIFICATION_TYPE_CORPAPPACCEPTMSG = 'CorpAppAcceptMsg';
+    const NOTIFICATION_TYPE_CORPAPPINVITEDMSG = 'CorpAppInvitedMsg';
+    const NOTIFICATION_TYPE_CORPAPPNEWMSG = 'CorpAppNewMsg';
+    const NOTIFICATION_TYPE_CORPAPPREJECTCUSTOMMSG = 'CorpAppRejectCustomMsg';
+    const NOTIFICATION_TYPE_CORPAPPREJECTMSG = 'CorpAppRejectMsg';
+    const NOTIFICATION_TYPE_CORPDIVIDENDMSG = 'CorpDividendMsg';
+    const NOTIFICATION_TYPE_CORPFRIENDLYFIREDISABLETIMERCOMPLETED = 'CorpFriendlyFireDisableTimerCompleted';
+    const NOTIFICATION_TYPE_CORPFRIENDLYFIREDISABLETIMERSTARTED = 'CorpFriendlyFireDisableTimerStarted';
+    const NOTIFICATION_TYPE_CORPFRIENDLYFIREENABLETIMERCOMPLETED = 'CorpFriendlyFireEnableTimerCompleted';
+    const NOTIFICATION_TYPE_CORPFRIENDLYFIREENABLETIMERSTARTED = 'CorpFriendlyFireEnableTimerStarted';
+    const NOTIFICATION_TYPE_CORPKICKED = 'CorpKicked';
+    const NOTIFICATION_TYPE_CORPLIQUIDATIONMSG = 'CorpLiquidationMsg';
+    const NOTIFICATION_TYPE_CORPNEWCEOMSG = 'CorpNewCEOMsg';
+    const NOTIFICATION_TYPE_CORPNEWSMSG = 'CorpNewsMsg';
+    const NOTIFICATION_TYPE_CORPOFFICEEXPIRATIONMSG = 'CorpOfficeExpirationMsg';
+    const NOTIFICATION_TYPE_CORPSTRUCTLOSTMSG = 'CorpStructLostMsg';
+    const NOTIFICATION_TYPE_CORPTAXCHANGEMSG = 'CorpTaxChangeMsg';
+    const NOTIFICATION_TYPE_CORPVOTECEOREVOKEDMSG = 'CorpVoteCEORevokedMsg';
+    const NOTIFICATION_TYPE_CORPVOTEMSG = 'CorpVoteMsg';
+    const NOTIFICATION_TYPE_CORPWARDECLAREDMSG = 'CorpWarDeclaredMsg';
+    const NOTIFICATION_TYPE_CORPWARFIGHTINGLEGALMSG = 'CorpWarFightingLegalMsg';
+    const NOTIFICATION_TYPE_CORPWARINVALIDATEDMSG = 'CorpWarInvalidatedMsg';
+    const NOTIFICATION_TYPE_CORPWARRETRACTEDMSG = 'CorpWarRetractedMsg';
+    const NOTIFICATION_TYPE_CORPWARSURRENDERMSG = 'CorpWarSurrenderMsg';
+    const NOTIFICATION_TYPE_CUSTOMSMSG = 'CustomsMsg';
+    const NOTIFICATION_TYPE_DECLAREWAR = 'DeclareWar';
+    const NOTIFICATION_TYPE_DISTRICTATTACKED = 'DistrictAttacked';
+    const NOTIFICATION_TYPE_DUSTAPPACCEPTEDMSG = 'DustAppAcceptedMsg';
+    const NOTIFICATION_TYPE_ENTOSISCAPTURESTARTED = 'EntosisCaptureStarted';
+    const NOTIFICATION_TYPE_FWALLIANCEKICKMSG = 'FWAllianceKickMsg';
+    const NOTIFICATION_TYPE_FWALLIANCEWARNINGMSG = 'FWAllianceWarningMsg';
+    const NOTIFICATION_TYPE_FWCHARKICKMSG = 'FWCharKickMsg';
+    const NOTIFICATION_TYPE_FWCHARRANKGAINMSG = 'FWCharRankGainMsg';
+    const NOTIFICATION_TYPE_FWCHARRANKLOSSMSG = 'FWCharRankLossMsg';
+    const NOTIFICATION_TYPE_FWCHARWARNINGMSG = 'FWCharWarningMsg';
+    const NOTIFICATION_TYPE_FWCORPJOINMSG = 'FWCorpJoinMsg';
+    const NOTIFICATION_TYPE_FWCORPKICKMSG = 'FWCorpKickMsg';
+    const NOTIFICATION_TYPE_FWCORPLEAVEMSG = 'FWCorpLeaveMsg';
+    const NOTIFICATION_TYPE_FWCORPWARNINGMSG = 'FWCorpWarningMsg';
+    const NOTIFICATION_TYPE_FACWARCORPJOINREQUESTMSG = 'FacWarCorpJoinRequestMsg';
+    const NOTIFICATION_TYPE_FACWARCORPJOINWITHDRAWMSG = 'FacWarCorpJoinWithdrawMsg';
+    const NOTIFICATION_TYPE_FACWARCORPLEAVEREQUESTMSG = 'FacWarCorpLeaveRequestMsg';
+    const NOTIFICATION_TYPE_FACWARCORPLEAVEWITHDRAWMSG = 'FacWarCorpLeaveWithdrawMsg';
+    const NOTIFICATION_TYPE_FACWARLPDISQUALIFIEDEVENT = 'FacWarLPDisqualifiedEvent';
+    const NOTIFICATION_TYPE_FACWARLPDISQUALIFIEDKILL = 'FacWarLPDisqualifiedKill';
+    const NOTIFICATION_TYPE_FACWARLPPAYOUTEVENT = 'FacWarLPPayoutEvent';
+    const NOTIFICATION_TYPE_FACWARLPPAYOUTKILL = 'FacWarLPPayoutKill';
+    const NOTIFICATION_TYPE_GAMETIMEADDED = 'GameTimeAdded';
+    const NOTIFICATION_TYPE_GAMETIMERECEIVED = 'GameTimeReceived';
+    const NOTIFICATION_TYPE_GAMETIMESENT = 'GameTimeSent';
+    const NOTIFICATION_TYPE_GIFTRECEIVED = 'GiftReceived';
+    const NOTIFICATION_TYPE_IHUBDESTROYEDBYBILLFAILURE = 'IHubDestroyedByBillFailure';
+    const NOTIFICATION_TYPE_INCURSIONCOMPLETEDMSG = 'IncursionCompletedMsg';
+    const NOTIFICATION_TYPE_INDUSTRYTEAMAUCTIONLOST = 'IndustryTeamAuctionLost';
+    const NOTIFICATION_TYPE_INDUSTRYTEAMAUCTIONWON = 'IndustryTeamAuctionWon';
+    const NOTIFICATION_TYPE_INFRASTRUCTUREHUBBILLABOUTTOEXPIRE = 'InfrastructureHubBillAboutToExpire';
+    const NOTIFICATION_TYPE_INSURANCEEXPIRATIONMSG = 'InsuranceExpirationMsg';
+    const NOTIFICATION_TYPE_INSURANCEFIRSTSHIPMSG = 'InsuranceFirstShipMsg';
+    const NOTIFICATION_TYPE_INSURANCEINVALIDATEDMSG = 'InsuranceInvalidatedMsg';
+    const NOTIFICATION_TYPE_INSURANCEISSUEDMSG = 'InsuranceIssuedMsg';
+    const NOTIFICATION_TYPE_INSURANCEPAYOUTMSG = 'InsurancePayoutMsg';
+    const NOTIFICATION_TYPE_JUMPCLONEDELETEDMSG1 = 'JumpCloneDeletedMsg1';
+    const NOTIFICATION_TYPE_JUMPCLONEDELETEDMSG2 = 'JumpCloneDeletedMsg2';
+    const NOTIFICATION_TYPE_KILLREPORTFINALBLOW = 'KillReportFinalBlow';
+    const NOTIFICATION_TYPE_KILLREPORTVICTIM = 'KillReportVictim';
+    const NOTIFICATION_TYPE_KILLRIGHTAVAILABLE = 'KillRightAvailable';
+    const NOTIFICATION_TYPE_KILLRIGHTAVAILABLEOPEN = 'KillRightAvailableOpen';
+    const NOTIFICATION_TYPE_KILLRIGHTEARNED = 'KillRightEarned';
+    const NOTIFICATION_TYPE_KILLRIGHTUNAVAILABLE = 'KillRightUnavailable';
+    const NOTIFICATION_TYPE_KILLRIGHTUNAVAILABLEOPEN = 'KillRightUnavailableOpen';
+    const NOTIFICATION_TYPE_KILLRIGHTUSED = 'KillRightUsed';
+    const NOTIFICATION_TYPE_LOCATECHARMSG = 'LocateCharMsg';
+    const NOTIFICATION_TYPE_MADEWARMUTUAL = 'MadeWarMutual';
+    const NOTIFICATION_TYPE_MERCOFFEREDNEGOTIATIONMSG = 'MercOfferedNegotiationMsg';
+    const NOTIFICATION_TYPE_MISSIONOFFEREXPIRATIONMSG = 'MissionOfferExpirationMsg';
+    const NOTIFICATION_TYPE_MISSIONTIMEOUTMSG = 'MissionTimeoutMsg';
+    const NOTIFICATION_TYPE_MOONMININGAUTOMATICFRACTURE = 'MoonminingAutomaticFracture';
+    const NOTIFICATION_TYPE_MOONMININGEXTRACTIONCANCELLED = 'MoonminingExtractionCancelled';
+    const NOTIFICATION_TYPE_MOONMININGEXTRACTIONFINISHED = 'MoonminingExtractionFinished';
+    const NOTIFICATION_TYPE_MOONMININGEXTRACTIONSTARTED = 'MoonminingExtractionStarted';
+    const NOTIFICATION_TYPE_MOONMININGLASERFIRED = 'MoonminingLaserFired';
+    const NOTIFICATION_TYPE_NPCSTANDINGSGAINED = 'NPCStandingsGained';
+    const NOTIFICATION_TYPE_NPCSTANDINGSLOST = 'NPCStandingsLost';
+    const NOTIFICATION_TYPE_OFFEREDSURRENDER = 'OfferedSurrender';
+    const NOTIFICATION_TYPE_OFFEREDTOALLY = 'OfferedToAlly';
+    const NOTIFICATION_TYPE_OLDLSCMESSAGES = 'OldLscMessages';
+    const NOTIFICATION_TYPE_OPERATIONFINISHED = 'OperationFinished';
+    const NOTIFICATION_TYPE_ORBITALATTACKED = 'OrbitalAttacked';
+    const NOTIFICATION_TYPE_ORBITALREINFORCED = 'OrbitalReinforced';
+    const NOTIFICATION_TYPE_OWNERSHIPTRANSFERRED = 'OwnershipTransferred';
+    const NOTIFICATION_TYPE_REIMBURSEMENTMSG = 'ReimbursementMsg';
+    const NOTIFICATION_TYPE_RESEARCHMISSIONAVAILABLEMSG = 'ResearchMissionAvailableMsg';
+    const NOTIFICATION_TYPE_RETRACTSWAR = 'RetractsWar';
+    const NOTIFICATION_TYPE_SEASONALCHALLENGECOMPLETED = 'SeasonalChallengeCompleted';
+    const NOTIFICATION_TYPE_SOVALLCLAIMAQUIREDMSG = 'SovAllClaimAquiredMsg';
+    const NOTIFICATION_TYPE_SOVALLCLAIMLOSTMSG = 'SovAllClaimLostMsg';
+    const NOTIFICATION_TYPE_SOVCOMMANDNODEEVENTSTARTED = 'SovCommandNodeEventStarted';
+    const NOTIFICATION_TYPE_SOVCORPBILLLATEMSG = 'SovCorpBillLateMsg';
+    const NOTIFICATION_TYPE_SOVCORPCLAIMFAILMSG = 'SovCorpClaimFailMsg';
+    const NOTIFICATION_TYPE_SOVDISRUPTORMSG = 'SovDisruptorMsg';
+    const NOTIFICATION_TYPE_SOVSTATIONENTEREDFREEPORT = 'SovStationEnteredFreeport';
+    const NOTIFICATION_TYPE_SOVSTRUCTUREDESTROYED = 'SovStructureDestroyed';
+    const NOTIFICATION_TYPE_SOVSTRUCTUREREINFORCED = 'SovStructureReinforced';
+    const NOTIFICATION_TYPE_SOVSTRUCTURESELFDESTRUCTCANCEL = 'SovStructureSelfDestructCancel';
+    const NOTIFICATION_TYPE_SOVSTRUCTURESELFDESTRUCTFINISHED = 'SovStructureSelfDestructFinished';
+    const NOTIFICATION_TYPE_SOVSTRUCTURESELFDESTRUCTREQUESTED = 'SovStructureSelfDestructRequested';
+    const NOTIFICATION_TYPE_SOVEREIGNTYIHDAMAGEMSG = 'SovereigntyIHDamageMsg';
+    const NOTIFICATION_TYPE_SOVEREIGNTYSBUDAMAGEMSG = 'SovereigntySBUDamageMsg';
+    const NOTIFICATION_TYPE_SOVEREIGNTYTCUDAMAGEMSG = 'SovereigntyTCUDamageMsg';
+    const NOTIFICATION_TYPE_STATIONAGGRESSIONMSG1 = 'StationAggressionMsg1';
+    const NOTIFICATION_TYPE_STATIONAGGRESSIONMSG2 = 'StationAggressionMsg2';
+    const NOTIFICATION_TYPE_STATIONCONQUERMSG = 'StationConquerMsg';
+    const NOTIFICATION_TYPE_STATIONSERVICEDISABLED = 'StationServiceDisabled';
+    const NOTIFICATION_TYPE_STATIONSERVICEENABLED = 'StationServiceEnabled';
+    const NOTIFICATION_TYPE_STATIONSTATECHANGEMSG = 'StationStateChangeMsg';
+    const NOTIFICATION_TYPE_STORYLINEMISSIONAVAILABLEMSG = 'StoryLineMissionAvailableMsg';
+    const NOTIFICATION_TYPE_STRUCTUREANCHORING = 'StructureAnchoring';
+    const NOTIFICATION_TYPE_STRUCTURECOURIERCONTRACTCHANGED = 'StructureCourierContractChanged';
+    const NOTIFICATION_TYPE_STRUCTUREDESTROYED = 'StructureDestroyed';
+    const NOTIFICATION_TYPE_STRUCTUREFUELALERT = 'StructureFuelAlert';
+    const NOTIFICATION_TYPE_STRUCTUREITEMSDELIVERED = 'StructureItemsDelivered';
+    const NOTIFICATION_TYPE_STRUCTUREITEMSMOVEDTOSAFETY = 'StructureItemsMovedToSafety';
+    const NOTIFICATION_TYPE_STRUCTURELOSTARMOR = 'StructureLostArmor';
+    const NOTIFICATION_TYPE_STRUCTURELOSTSHIELDS = 'StructureLostShields';
+    const NOTIFICATION_TYPE_STRUCTUREONLINE = 'StructureOnline';
+    const NOTIFICATION_TYPE_STRUCTURESERVICESOFFLINE = 'StructureServicesOffline';
+    const NOTIFICATION_TYPE_STRUCTUREUNANCHORING = 'StructureUnanchoring';
+    const NOTIFICATION_TYPE_STRUCTUREUNDERATTACK = 'StructureUnderAttack';
+    const NOTIFICATION_TYPE_STRUCTUREWENTHIGHPOWER = 'StructureWentHighPower';
+    const NOTIFICATION_TYPE_STRUCTUREWENTLOWPOWER = 'StructureWentLowPower';
+    const NOTIFICATION_TYPE_STRUCTURESJOBSCANCELLED = 'StructuresJobsCancelled';
+    const NOTIFICATION_TYPE_STRUCTURESJOBSPAUSED = 'StructuresJobsPaused';
+    const NOTIFICATION_TYPE_STRUCTURESREINFORCEMENTCHANGED = 'StructuresReinforcementChanged';
+    const NOTIFICATION_TYPE_TOWERALERTMSG = 'TowerAlertMsg';
+    const NOTIFICATION_TYPE_TOWERRESOURCEALERTMSG = 'TowerResourceAlertMsg';
+    const NOTIFICATION_TYPE_TRANSACTIONREVERSALMSG = 'TransactionReversalMsg';
+    const NOTIFICATION_TYPE_TUTORIALMSG = 'TutorialMsg';
+    const NOTIFICATION_TYPE_WARALLYOFFERDECLINEDMSG = 'WarAllyOfferDeclinedMsg';
+    const NOTIFICATION_TYPE_WARSURRENDERDECLINEDMSG = 'WarSurrenderDeclinedMsg';
+    const NOTIFICATION_TYPE_WARSURRENDEROFFERMSG = 'WarSurrenderOfferMsg';
+
+    /**
+     * @var bool
+     */
+    public $isRead;
+
+    /**
+     * @var int
+     */
+    public $notificationId;
+
+    /**
+     * @var int
+     */
+    public $senderId;
+
+    /**
+     * @var string
+     */
+    public $senderType;
+
+    /**
+     * @var string
+     */
+    public $text;
+
+    /**
+     * @var \DateTime
+     */
+    public $timestamp;
+
+    /**
+     * @var string
+     */
+    public $type;
+
+    public function __construct($data)
+    {
+        parent::__construct($data);
+        $this->timestamp = (new \DateTime())->setTimestamp($this->timestamp);
+    }
+}
