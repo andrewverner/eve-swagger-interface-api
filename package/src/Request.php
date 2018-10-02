@@ -109,7 +109,7 @@ class Request
     public function getLogger()
     {
         if (!$this->logger) {
-            $this->logger = new Logger(new LoggerFileTransport('/var/www/html/esi/log'));
+            $this->logger = new Logger(new LoggerFileTransport('/var/www/html/esi/package/log'));
         }
 
         return $this->logger;
