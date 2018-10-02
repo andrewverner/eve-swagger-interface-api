@@ -83,16 +83,27 @@ class FleetInvitation
         return true;
     }
 
+    /**
+     * @return bool
+     * @throws \Exception
+     */
     public function send()
     {
+        $params = [
+            'character_id' => $this->characterId,
+            'role' => $this->role,
+        ];
+        if ($this->squadId) {
+            $params['squad_id'] = $this->squadId;
+        }
+        if ($this->wingId) {
+            $params['wing_id'] = $this->wingId;
+        }
+
         (new Request("/fleets/{$this->fleetId}/members/?token={$this->token}"))
             ->setType(Request::TYPE_POST)
-            ->setData(json_encode([
-                'character_id' => $this->characterId,
-                'squad_id' => $this->squadId,
-                'wing_id' => $this->wingId,
-                'role' => $this->role,
-            ]));
+            ->setData(json_encode($params))
+            ->execute();
 
         return true;
     }

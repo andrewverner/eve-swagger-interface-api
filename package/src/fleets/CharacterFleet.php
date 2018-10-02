@@ -228,7 +228,7 @@ class CharacterFleet extends BaseObject
      */
     public function wings()
     {
-        $wings = (new Request("/fleets/{fleet_id}/wings/"))
+        $wings = (new Request("/fleets/{$this->fleetId}/wings/"))
             ->setData(['token' => $this->token])
             ->execute();
 

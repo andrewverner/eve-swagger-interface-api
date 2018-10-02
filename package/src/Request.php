@@ -94,9 +94,11 @@ class Request
             $errno = curl_errno($ch);
             $error = curl_error($ch);
             $this->getLogger()->log("cURL error #{$errno}: {$error}", 'request');
+            curl_close($ch);
             return null;
         }
 
+        curl_close($ch);
         $data = json_decode($result, true);
         $this->getLogger()->log("Response from ESI: " . print_r($data, true), 'request');
         if (isset($data['error'])) {

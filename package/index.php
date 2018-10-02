@@ -50,7 +50,11 @@ MSG;
     echo $msg;
 });
 
-$api = new \DenisKhodakovskiyESI\EVESwaggerAPI();
+$api = new \DenisKhodakovskiyESI\EVESwaggerAPI(
+    'de03de3a63a8483ea901c6e351efe7f4',
+    'JY7KkviD1wk162WbARa7712W95zXXLsTKJbC5VIw',
+    'http://esi.local/?auth=1'
+);
 $sso = $api->sso();
 if (isset($_GET['auth'])) {
     if (isset($_GET['code'])) {
@@ -58,7 +62,7 @@ if (isset($_GET['auth'])) {
         file_put_contents('/var/www/html/esi/package/.token', serialize($token));
         Header("Location: /");
     } else {
-        Header("Location: " . $sso->getAuthUrl($sso->getScopesList()));
+        Header("Location: " . $sso->getAuthUrl(array_keys($sso->getScopesList())));
     }
 } elseif (isset($_GET['refresh'])) {
     /**
@@ -98,14 +102,21 @@ if (isset($_GET['auth'])) {
     $oxrgn = 30004521;
     $tz6j2 = 30004529;
 
+    $elvira = 534122154;
+
     //$fleetInvite = new \DenisKhodakovskiyESI\src\fleets\FleetInvitation(\DenisKhodakovskiyESI\src\fleets\FleetInvitation::ROLE_FLEET_COMMANDER);
     #$fleetInvite->squadId = 1;
     #$fleetInvite->wingId = 1;
     //var_dump($fleetInvite->validate());
-
     $character = $sso->getCharacter($token->accessToken);
-    $corp = $api->corporation($character->info()->corporationId, $token->accessToken);
+    //$corp = $api->corporation($character->info()->corporationId, $token->accessToken);
+    $fleet = $character->fleet();
+    /*$fleet->isFreeMove = true;
+    $fleet->motd = 'Blah blah blah';*/
+    /*$invite = $fleet->createInvite(\DenisKhodakovskiyESI\src\fleets\CharacterFleet::ROLE_WING_COMMANDER);
+    $invite->characterId = $elvira;
+    $invite->wingId = 2143211473514;*/
     \DenisKhodakovskiyESI\Dumper::printR(
-        $corp->assets()
+        $fleet->deleteWing(2143211473514)
     );
 }
