@@ -48,7 +48,7 @@ class Character
      * Character id
      * @var int
      */
-    private $characterId;
+    public $characterId;
 
     /**
      * Character API access token

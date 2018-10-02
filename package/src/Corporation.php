@@ -8,6 +8,9 @@
 
 namespace DenisKhodakovskiyESI\src;
 
+use DenisKhodakovskiyESI\package\src\assets\CorporationAsset;
+use DenisKhodakovskiyESI\src\assets\AssetItemLocation;
+use DenisKhodakovskiyESI\src\assets\AssetItemName;
 use DenisKhodakovskiyESI\src\corporation\CorporationAllianceHistoryRecord;
 use DenisKhodakovskiyESI\src\corporation\CorporationIcons;
 use DenisKhodakovskiyESI\src\corporation\CorporationInfo;
@@ -132,6 +135,74 @@ class Corporation
         }
 
         return $this->lpStore;
+    }
+
+    /**
+     * Return a list of the corporation assets
+     * @param int $page
+     * @return CorporationAsset[]
+     * @throws \Exception
+     */
+    public function assets($page = 1)
+    {
+        $this->isTokenProvided();
+
+        $assets = (new Request("/corporations/{$this->corporationId}/assets/"))
+            ->setData([
+                'token' => $this->token,
+                'page' => $page,
+            ])
+            ->execute();
+
+        foreach ($assets as &$asset) {
+            $asset = new CorporationAsset($asset);
+        }
+
+        return $assets;
+    }
+
+    /**
+     * Return locations for a set of item ids, which you can get from corporation assets endpoint. Coordinates for items in hangars or stations are set to (0,0,0)
+     * @param array $itemsIds
+     * @return AssetItemLocation[]
+     * @throws \Exception
+     */
+    public function assetsLocations(array $itemsIds)
+    {
+        $this->isTokenProvided();
+
+        $locations = (new Request("/corporations/{$this->corporationId}/assets/locations/?token={$this->token}"))
+            ->setType(Request::TYPE_POST)
+            ->setData(json_encode($itemsIds))
+            ->execute();
+
+        foreach ($locations as &$location) {
+            $location = new AssetItemLocation($location);
+        }
+
+        return $locations;
+    }
+
+    /**
+     * Return names for a set of item ids, which you can get from corporation assets endpoint. Only valid for items that can customize names, like containers or ships
+     * @param array $itemsIds
+     * @return AssetItemName[]
+     * @throws \Exception
+     */
+    public function assetsNames(array $itemsIds)
+    {
+        $this->isTokenProvided();
+
+        $names = (new Request("/corporations/{$this->corporationId}/assets/names/?token={$this->token}"))
+            ->setType(Request::TYPE_POST)
+            ->setData(json_encode($itemsIds))
+            ->execute();
+
+        foreach ($names as &$name) {
+            $name = new AssetItemName($name);
+        }
+
+        return $names;
     }
 
     /**
