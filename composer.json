@@ -13,6 +13,6 @@
     ],
     "minimum-stability": "dev",
     "autoload": {
-        "psr-4": {"DenisKhodakovskiyESI\\": "src/"}
+        "psr-4": {"DenisKhodakovskiyESI\\": "package/"}
     }
 }
