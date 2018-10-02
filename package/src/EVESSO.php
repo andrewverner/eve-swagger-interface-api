@@ -18,16 +18,11 @@ class EVESSO
     private $redirectUri;
     private $host = 'https://login.eveonline.com/oauth';
 
-    public function __construct()
+    public function __construct($clientId, $secretKey, $callback)
     {
-        if (!file_exists(__DIR__ . '/config/params.php')) {
-            throw new \Exception(__DIR__ . '/config/params.php file not found');
-        }
-
-        $params = require_once ('config/params.php');
-        foreach ($params as $key => $value) {
-            $this->{$key} = $value;
-        }
+        $this->clientId = $clientId;
+        $this->secretKey = $secretKey;
+        $this->redirectUri = $callback;
     }
 
     /**

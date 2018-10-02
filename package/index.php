@@ -55,7 +55,7 @@ $sso = $api->sso();
 if (isset($_GET['auth'])) {
     if (isset($_GET['code'])) {
         $token = $sso->getAccessToken($_GET['code']);
-        file_put_contents('/var/www/html/esi/.token', serialize($token));
+        file_put_contents('/var/www/html/esi/package/.token', serialize($token));
         Header("Location: /");
     } else {
         Header("Location: " . $sso->getAuthUrl($sso->getScopesList()));
@@ -64,13 +64,13 @@ if (isset($_GET['auth'])) {
     /**
      * @var \DenisKhodakovskiyESI\src\sso\SSOToken $token
      */
-    $token = file_exists('/var/www/html/esi/.token')
-        ? unserialize(file_get_contents('/var/www/html/esi/.token'))
+    $token = file_exists('/var/www/html/esi/package/.token')
+        ? unserialize(file_get_contents('/var/www/html/esi/package/.token'))
         : null;
 
     if ($token) {
         $token = $sso->refreshToken($token->refreshToken);
-        file_put_contents('/var/www/html/esi/.token', serialize($token));
+        file_put_contents('/var/www/html/esi/package/.token', serialize($token));
         Header("Location: /");
     } else {
         echo "Err0r";
@@ -79,8 +79,8 @@ if (isset($_GET['auth'])) {
     /**
      * @var \DenisKhodakovskiyESI\src\sso\SSOToken $token
      */
-    $token = file_exists('/var/www/html/esi/.token')
-        ? unserialize(file_get_contents('/var/www/html/esi/.token'))
+    $token = file_exists('/var/www/html/esi/package/.token')
+        ? unserialize(file_get_contents('/var/www/html/esi/package/.token'))
         : null;
 
     $characterId = 523375194;
@@ -104,7 +104,8 @@ if (isset($_GET['auth'])) {
     //var_dump($fleetInvite->validate());
 
     $character = $sso->getCharacter($token->accessToken);
+    $corp = $api->corporation($character->info()->corporationId, $token->accessToken);
     \DenisKhodakovskiyESI\Dumper::printR(
-        $character->mails()
+        $corp->assets()
     );
 }

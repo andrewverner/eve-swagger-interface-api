@@ -19,6 +19,17 @@ use DenisKhodakovskiyESI\src\Route;
 
 class EVESwaggerAPI
 {
+    private $clientId;
+    private $secretKey;
+    private $callback;
+
+    public function __construct($clientId, $secretKey, $callback = '')
+    {
+        $this->clientId = $clientId;
+        $this->secretKey = $secretKey;
+        $this->callback = $callback;
+    }
+
     /**
      * Returns an instance of a character class
      * @param int $characterId
@@ -94,6 +105,6 @@ class EVESwaggerAPI
      */
     public function sso()
     {
-        return new EVESSO();
+        return new EVESSO($this->clientId, $this->secretKey, $this->callback);
     }
 }
