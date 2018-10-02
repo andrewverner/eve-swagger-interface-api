@@ -11,5 +11,8 @@
             "email": "denis.khodakovskiy@gmail.com"
         }
     ],
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {"DenisKhodakovskiyESI\\": "src/"}
+    }
 }
