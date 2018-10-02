@@ -22,8 +22,11 @@ spl_autoload_register(function ($className) {
             'src/incursions',
             'src/industry',
             'src/insurance',
+            'src/killmails',
+            'src/location',
             'src/logger',
             'src/loyalty',
+            'src/mail',
             'src/market',
             'src/sso',
         ];
@@ -95,11 +98,13 @@ if (isset($_GET['auth'])) {
     $oxrgn = 30004521;
     $tz6j2 = 30004529;
 
+    //$fleetInvite = new \DenisKhodakovskiyESI\src\fleets\FleetInvitation(\DenisKhodakovskiyESI\src\fleets\FleetInvitation::ROLE_FLEET_COMMANDER);
+    #$fleetInvite->squadId = 1;
+    #$fleetInvite->wingId = 1;
+    //var_dump($fleetInvite->validate());
+
     $character = $sso->getCharacter($token->accessToken);
-    $fleet = $character->fleet();
-    $fleet->isFreeMove = false;
-    $fleet->motd = 'Test API fleet MOTD';
     \DenisKhodakovskiyESI\Dumper::printR(
-        $fleet->members()
+        $character->mails()
     );
 }

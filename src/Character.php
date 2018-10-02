@@ -33,6 +33,14 @@ use DenisKhodakovskiyESI\src\contacts\CharacterContact;
 use DenisKhodakovskiyESI\src\contacts\CharacterContactLabel;
 use DenisKhodakovskiyESI\src\contracts\CharacterContract;
 use DenisKhodakovskiyESI\src\fleets\CharacterFleet;
+use DenisKhodakovskiyESI\src\industry\CharacterIndustryJob;
+use DenisKhodakovskiyESI\src\industry\CharacterMiningRecord;
+use DenisKhodakovskiyESI\src\killmails\CharacterKillMail;
+use DenisKhodakovskiyESI\src\location\CharacterLocation;
+use DenisKhodakovskiyESI\src\location\CharacterOnline;
+use DenisKhodakovskiyESI\src\location\CharacterShip;
+use DenisKhodakovskiyESI\src\loyalty\CharacterLP;
+use DenisKhodakovskiyESI\src\mail\CharacterMail;
 
 class Character
 {
@@ -738,6 +746,153 @@ class Character
         } catch (\Exception $exception) {
             return null;
         }
+    }
+
+    /**
+     * List industry jobs placed by a character
+     * @return CharacterIndustryJob[]
+     * @throws \Exception
+     */
+    public function industryJobs()
+    {
+        $jobs = (new Request("/characters/{$this->characterId}/industry/jobs/"))
+            ->setData([
+                'token' => $this->token
+            ])
+            ->execute();
+
+        foreach ($jobs as &$job) {
+            $job = new CharacterIndustryJob($job);
+        }
+
+        return $jobs;
+    }
+
+    /**
+     * Paginated record of all mining done by a character for the past 30 days
+     * @param int $page
+     * @return CharacterMiningRecord[]
+     * @throws \Exception
+     */
+    public function mining($page = 1)
+    {
+        $data = (new Request("/characters/{$this->characterId}/mining/"))
+            ->setData([
+                'page' => $page,
+                'token' => $this->token
+            ])
+            ->execute();
+
+        foreach ($data as &$mining) {
+            $mining = new CharacterMiningRecord($mining);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Return a list of a character’s kills and losses going back 90 days
+     * @return CharacterKillMail[]
+     * @throws \Exception
+     */
+    public function killMails()
+    {
+        $killMails = (new Request("/characters/{$this->characterId}/killmails/recent/"))
+            ->setData(['token' => $this->token])
+            ->execute();
+
+        foreach ($killMails as &$killMail) {
+            $killMail = new CharacterKillMail($killMail, $this->token);
+        }
+
+        return $killMails;
+    }
+
+    /**
+     * Information about the characters current location. Returns the current solar system id, and also the current station or structure ID if applicable
+     * @return CharacterLocation
+     * @throws \Exception
+     */
+    public function location()
+    {
+        $location = (new Request("/characters/{$this->characterId}/location/"))
+            ->setData(['token' => $this->token])
+            ->execute();
+
+        return new CharacterLocation($location);
+    }
+
+    /**
+     * Checks if the character is currently online
+     * @return CharacterOnline
+     * @throws \Exception
+     */
+    public function onlineStat()
+    {
+        $data = (new Request("/characters/{$this->characterId}/online/"))
+            ->setData(['token' => $this->token])
+            ->execute();
+
+        return new CharacterOnline($data);
+    }
+
+    /**
+     * Get the current ship type, name and id
+     * @return CharacterShip
+     * @throws \Exception
+     */
+    public function ship()
+    {
+        $ship = (new Request("/characters/{$this->characterId}/ship/"))
+            ->setData(['token' => $this->token])
+            ->execute();
+
+        return new CharacterShip($ship);
+    }
+
+    /**
+     * Return a list of loyalty points for all corporations the character has worked for
+     * @return CharacterLP[]
+     * @throws \Exception
+     */
+    public function lp()
+    {
+        $lps = (new Request("/characters/{$this->characterId}/loyalty/points/"))
+            ->setData(['token' => $this->token])
+            ->execute();
+
+        foreach ($lps as &$lp) {
+            $lp = new CharacterLP($lp);
+        }
+
+        return $lps;
+    }
+
+    /**
+     * Return the 50 most recent mail headers belonging to the character that match the query criteria. Queries can be filtered by label, and last_mail_id can be used to paginate backwards
+     * @param null|int $lastMailId
+     * @param int[]|null $labels
+     * @return CharacterMail[]
+     * @throws \Exception
+     */
+    public function mails($lastMailId = null, array $labels = null)
+    {
+        $params = ['token' => $this->token];
+        if ($lastMailId) {
+            $params['last_mail_id'] = $lastMailId;
+        }
+        if ($labels) {
+            $params['labels'] = implode(',', $labels);
+        }
+        $mails = (new Request("/characters/{$this->characterId}/mail/"))
+            ->setData($params)
+            ->execute();
+
+        foreach ($mails as &$mail) {
+            $mail = new CharacterMail($mail, $this->characterId, $this->token);
+        }
+
+        return $mails;
     }
 
     /**
